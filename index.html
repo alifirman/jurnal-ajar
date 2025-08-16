@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Jurnal Ajar - SMK Jawara</title>
-    <script src="https://unpkg.com/feather-icons@4.29.0/dist/feather.min.js"></script>
+    <title>Web Jurnal Ajar - Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-    <script src="https://unpkg.com/jspdf-autotable@3.5.31/dist/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
         .fade-in {
             animation: fadeIn 0.3s ease-in;
@@ -39,18 +39,16 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                     <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
                 </div>
-                <button type="submit" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition duration-200">
+                <button type="submit" class="w-full bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition duration-200">
                     <i data-feather="log-in" class="w-4 h-4 inline mr-2"></i>
                     Masuk
                 </button>
             </form>
             
             <div class="mt-6 text-center">
-                <p class="text-black-500 mt-2">Belum punya akun?
                 <button id="registerBtn" class="text-gray-600 hover:text-gray-800 text-sm">
-                    Daftar sebagai guru
+                    Belum punya akun? Daftar sebagai guru
                 </button>
-                </p> 
             </div>
             
 
@@ -85,7 +83,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Mata Pelajaran</label>
                     <input type="text" id="regSubject" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
                 </div>
-                <button type="submit" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition duration-200">
+                <button type="submit" class="w-full bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition duration-200">
                     <i data-feather="user-plus" class="w-4 h-4 inline mr-2"></i>
                     Daftar
                 </button>
@@ -123,13 +121,13 @@
         </header>
 
         <!-- Admin Navigation -->
-        <nav class="bg-gray-800">
+        <nav class="bg-gray-600">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex space-x-8">
                     <button class="admin-nav-btn active text-white px-3 py-4 text-sm font-medium border-b-2 border-white" data-tab="pending">
                         <i data-feather="clock" class="w-4 h-4 inline mr-2"></i>
                         Konfirmasi Guru
-                        <span id="pendingBadge" class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[20px] text-center hidden">0</span>
+                        <span id="pendingBadge" class="ml-2 bg-gray-800 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[20px] text-center hidden">0</span>
                     </button>
                     <button class="admin-nav-btn text-gray-300 hover:text-white px-3 py-4 text-sm font-medium border-b-2 border-transparent hover:border-gray-300" data-tab="teachers">
                         <i data-feather="users" class="w-4 h-4 inline mr-2"></i>
@@ -164,7 +162,7 @@
                 <div class="bg-white shadow rounded-lg">
                     <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
                         <h2 class="text-lg font-medium text-gray-900">Kelola Guru</h2>
-                        <button id="addTeacherBtn" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200">
+                        <button id="addTeacherBtn" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200">
                             <i data-feather="plus" class="w-4 h-4 inline mr-2"></i>
                             Tambah Guru
                         </button>
@@ -190,16 +188,16 @@
                                     <input type="date" id="adminStartDate" class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-500">
                                     <span class="text-gray-500 self-center">s/d</span>
                                     <input type="date" id="adminEndDate" class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-500">
-                                    <button id="adminFilterBtn" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200 text-sm">
+                                    <button id="adminFilterBtn" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-200 text-sm">
                                         <i data-feather="filter" class="w-4 h-4 inline mr-1"></i>
                                         Filter
                                     </button>
-                                    <button id="adminResetFilterBtn" class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition duration-200 text-sm">
+                                    <button id="adminResetFilterBtn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 hover:text-white transition duration-200 text-sm">
                                         <i data-feather="x" class="w-4 h-4 inline mr-1"></i>
                                         Reset
                                     </button>
                                 </div>
-                                <button id="adminExportPdfBtn" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200 text-sm">
+                                <button id="adminExportPdfBtn" class="bg-gray-700 text-white px-4 py-2 rounded-md hover:bg-gray-800 transition duration-200 text-sm">
                                     <i data-feather="file-text" class="w-4 h-4 inline mr-1"></i>
                                     Export PDF
                                 </button>
@@ -234,11 +232,11 @@
                         </div>
                         <div class="p-6 space-y-4">
                             <div class="flex flex-wrap gap-4">
-                                <button id="exportBtn" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200">
+                                <button id="exportBtn" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200">
                                     <i data-feather="download" class="w-4 h-4 inline mr-2"></i>
                                     Export Database
                                 </button>
-                                <label class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition duration-200 cursor-pointer">
+                                <label class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-200 cursor-pointer">
                                     <i data-feather="upload" class="w-4 h-4 inline mr-2"></i>
                                     Import Database
                                     <input type="file" id="importFile" accept=".json" class="hidden">
@@ -258,11 +256,11 @@
                         </div>
                         <div class="p-6 space-y-4">
                             <div class="flex flex-wrap gap-4">
-                                <button id="downloadTemplateBtn" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200">
+                                <button id="downloadTemplateBtn" class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition duration-200">
                                     <i data-feather="file-text" class="w-4 h-4 inline mr-2"></i>
                                     Download Template CSV
                                 </button>
-                                <label class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition duration-200 cursor-pointer">
+                                <label class="bg-gray-700 text-white px-4 py-2 rounded-md hover:bg-gray-800 transition duration-200 cursor-pointer">
                                     <i data-feather="users" class="w-4 h-4 inline mr-2"></i>
                                     Import Guru CSV
                                     <input type="file" id="importTeachersFile" accept=".csv" class="hidden">
@@ -322,21 +320,21 @@
                             </div>
                             <div class="flex gap-2">
                                 <!-- Filter buttons - hidden on mobile -->
-                                <button id="teacherFilterBtn" class="hidden md:inline-flex bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200 text-sm">
+                                <button id="teacherFilterBtn" class="hidden md:inline-flex bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-200 text-sm">
                                     <i data-feather="filter" class="w-4 h-4 inline mr-1"></i>
                                     Filter
                                 </button>
-                                <button id="teacherResetFilterBtn" class="hidden md:inline-flex bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition duration-200 text-sm">
+                                <button id="teacherResetFilterBtn" class="hidden md:inline-flex bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 hover:text-white transition duration-200 text-sm">
                                     <i data-feather="x" class="w-4 h-4 inline mr-1"></i>
                                     Reset
                                 </button>
                                 <!-- Export and Add buttons - always visible -->
-                                <button id="teacherExportPdfBtn" class="bg-gray-700 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-gray-800 transition duration-200 text-xs sm:text-sm flex-1 sm:flex-none">
+                                <button id="teacherExportPdfBtn" class="bg-gray-600 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200 text-xs sm:text-sm flex-1 sm:flex-none">
                                     <i data-feather="file-text" class="w-4 h-4 inline mr-1"></i>
                                     <span class="hidden sm:inline">Export PDF</span>
                                     <span class="sm:hidden">PDF</span>
                                 </button>
-                                <button id="addJournalBtn" class="bg-gray-800 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200 text-xs sm:text-sm flex-1 sm:flex-none">
+                                <button id="addJournalBtn" class="bg-gray-700 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-gray-800 transition duration-200 text-xs sm:text-sm flex-1 sm:flex-none">
                                     <i data-feather="plus" class="w-4 h-4 inline mr-1 sm:mr-2"></i>
                                     <span class="hidden sm:inline">Tambah Jurnal</span>
                                     <span class="sm:hidden">Tambah</span>
@@ -398,7 +396,7 @@
                 </div>
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" id="cancelTeacher" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-200">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition duration-200">Simpan</button>
+                    <button type="submit" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition duration-200">Simpan</button>
                 </div>
             </form>
         </div>
@@ -429,7 +427,7 @@
                 </div>
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" id="cancelProfile" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-200">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition duration-200">Simpan</button>
+                    <button type="submit" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition duration-200">Simpan</button>
                 </div>
             </form>
         </div>
@@ -450,7 +448,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Kelas</label>
-                        <input type="text" id="journalClass" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" placeholder="X TKJ" required>
+                        <input type="text" id="journalClass" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -491,19 +489,19 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Materi Pembelajaran</label>
-                    <input type="text" id="journalMaterial" placeholder="Memahami dan Menulis Teks Prosedur" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                    <input type="text" id="journalMaterial" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Kegiatan Pembelajaran</label>
-                    <textarea id="journalActivity" rows="2" placeholder="Siswa menganalisis contoh teks prosedur dan diskusi kelompok" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required></textarea>
+                    <textarea id="journalActivity" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required></textarea>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label>
-                    <textarea id="journalNotes" rows="1" placeholder="Nihil" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"></textarea>
+                    <textarea id="journalNotes" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"></textarea>
                 </div>
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" id="cancelJournal" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-200">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition duration-200">Simpan</button>
+                    <button type="submit" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition duration-200">Simpan</button>
                 </div>
             </form>
         </div>
@@ -527,21 +525,32 @@
         // Database structure
         let database = {
             users: [
-                { id: 1, username: 'admin', password: simpleHash('admin123'), role: 'admin', name: 'Administrator', approved: true },
-                { id: 2, username: 'sari', password: simpleHash('sari123'), role: 'teacher', name: 'Sari Dewi', subject: 'Matematika', approved: true, active: true },
-                { id: 3, username: 'budi', password: simpleHash('budi123'), role: 'teacher', name: 'Budi Santoso', subject: 'Bahasa Indonesia', approved: true, active: true },
-                { id: 4, username: 'rina', password: simpleHash('rina123'), role: 'teacher', name: 'Rina Wati', subject: 'IPA', approved: true, active: false }
+                { id: 1, username: 'admin', password: simpleHash('20535467*'), role: 'admin', name: 'Administrator', approved: true },
+                { id: 2, username: 'guru', password: simpleHash('guru123'), role: 'teacher', name: 'Guru', subject: 'Mata Pelajaran', approved: true, active: true }
             ],
-            pendingUsers: [
-                { id: 5, username: 'ahmad', password: simpleHash('ahmad123'), role: 'teacher', name: 'Ahmad Fauzi', subject: 'Sejarah', approved: false }
-            ],
-            journals: [
-                { id: 1, teacherId: 2, date: '2024-01-15', class: 'VII-A', startTime: '1', endTime: '2', material: 'Bilangan Bulat', activity: 'Menjelaskan konsep bilangan bulat dan operasinya dengan menggunakan media pembelajaran interaktif', notes: 'Siswa antusias mengikuti pembelajaran' },
-                { id: 2, teacherId: 2, date: '2024-01-16', class: 'VII-B', startTime: '3', endTime: '4', material: 'Pecahan', activity: 'Praktik mengerjakan soal pecahan dengan metode diskusi kelompok', notes: 'Perlu remedial untuk 3 siswa' },
-                { id: 3, teacherId: 3, date: '2024-01-15', class: 'VIII-A', startTime: '5', endTime: '6', material: 'Puisi', activity: 'Membaca dan menganalisis puisi karya Chairil Anwar dengan metode ceramah dan tanya jawab', notes: 'Siswa mampu memahami makna puisi dengan baik' },
-                { id: 4, teacherId: 4, date: '2024-01-17', class: 'IX-A', startTime: '2', endTime: '3', material: 'Sistem Reproduksi', activity: 'Menjelaskan sistem reproduksi manusia menggunakan model anatomi dan video pembelajaran', notes: 'Materi sensitif disampaikan dengan pendekatan yang tepat' }
-            ]
+            pendingUsers: [],
+            journals: []
         };
+
+        // Ensure admin user always exists
+        function ensureAdminExists() {
+            const adminExists = database.users.find(u => u.username === 'admin' && u.role === 'admin');
+            if (!adminExists) {
+                const adminUser = {
+                    id: 1,
+                    username: 'admin',
+                    password: simpleHash('20535467*'),
+                    role: 'admin',
+                    name: 'Administrator',
+                    approved: true
+                };
+                // Remove any existing user with id 1 first
+                database.users = database.users.filter(u => u.id !== 1);
+                // Add admin user at the beginning
+                database.users.unshift(adminUser);
+                saveDatabase();
+            }
+        }
 
         // Load database from localStorage
         function loadDatabase() {
@@ -549,6 +558,8 @@
             if (saved) {
                 database = JSON.parse(saved);
             }
+            // Always ensure admin exists after loading
+            ensureAdminExists();
         }
 
         // Save database to localStorage
@@ -716,6 +727,7 @@
             document.getElementById('registerScreen').classList.add('hidden');
             document.getElementById('adminDashboard').classList.add('hidden');
             document.getElementById('teacherDashboard').classList.add('hidden');
+            document.getElementById('securityFooter').classList.remove('hidden');
             document.getElementById('loginForm').reset();
         }
 
@@ -727,6 +739,7 @@
         function showAdminDashboard() {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('adminDashboard').classList.remove('hidden');
+            document.getElementById('securityFooter').classList.add('hidden');
             document.getElementById('adminName').textContent = currentUser.name;
             updatePendingBadge();
             loadPendingTeachers();
@@ -736,6 +749,7 @@
         function showTeacherDashboard() {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('teacherDashboard').classList.remove('hidden');
+            document.getElementById('securityFooter').classList.add('hidden');
             document.getElementById('teacherName').textContent = currentUser.name;
             loadTeacherJournals();
             feather.replace();
@@ -787,11 +801,11 @@
                         <p class="text-gray-600">Mata Pelajaran: ${user.subject}</p>
                     </div>
                     <div class="flex space-x-2">
-                        <button onclick="approveTeacher(${user.id})" class="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 text-sm">
+                        <button onclick="approveTeacher(${user.id})" class="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 text-sm">
                             <i data-feather="check" class="w-4 h-4 inline mr-1"></i>
                             Setujui
                         </button>
-                        <button onclick="rejectTeacher(${user.id})" class="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500 text-sm">
+                        <button onclick="rejectTeacher(${user.id})" class="bg-gray-300 text-gray-700 px-3 py-1 rounded hover:bg-gray-400 hover:text-white text-sm">
                             <i data-feather="x" class="w-4 h-4 inline mr-1"></i>
                             Tolak
                         </button>
@@ -859,7 +873,7 @@
                                 <div class="ml-4 flex-1">
                                     <div class="flex items-center justify-between">
                                         <h3 class="text-lg font-semibold text-gray-900">${teacher.name || teacher.username || 'Unknown'}</h3>
-                                        <span class="px-2 py-1 text-xs font-medium rounded-full ${teacher.active === false ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800'}">
+                                        <span class="px-2 py-1 text-xs font-medium rounded-full ${teacher.active === false ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">
                                             ${teacher.active === false ? 'Tidak Aktif' : 'Aktif'}
                                         </span>
                                     </div>
@@ -877,15 +891,15 @@
                                 </div>
                             </div>
                             <div class="flex space-x-2">
-                                <button onclick="editTeacher(${teacher.id})" class="flex-1 bg-gray-600 text-white px-3 py-2 rounded-md hover:bg-gray-700 transition duration-200 text-sm">
+                                <button onclick="editTeacher(${teacher.id})" class="flex-1 bg-gray-500 text-white px-3 py-2 rounded-md hover:bg-gray-600 transition duration-200 text-sm">
                                     <i data-feather="edit" class="w-4 h-4 inline mr-1"></i>
                                     Edit
                                 </button>
-                                <button onclick="toggleTeacherStatus(${teacher.id})" class="flex-1 ${teacher.active === false ? 'bg-gray-200 hover:bg-gray-300' : 'bg-gray-100 hover:bg-gray-200'} text-black px-3 py-2 rounded-md transition duration-200 text-sm">
+                                <button onclick="toggleTeacherStatus(${teacher.id})" class="flex-1 ${teacher.active === false ? 'bg-gray-600 hover:bg-gray-700' : 'bg-gray-400 hover:bg-gray-500'} text-white px-3 py-2 rounded-md transition duration-200 text-sm">
                                     <i data-feather="${teacher.active === false ? 'play' : 'pause'}" class="w-4 h-4 inline mr-1"></i>
                                     ${teacher.active === false ? 'Aktifkan' : 'Nonaktifkan'}
                                 </button>
-                                <button onclick="deleteTeacher(${teacher.id})" class="bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-700 transition duration-200 text-sm">
+                                <button onclick="deleteTeacher(${teacher.id})" class="bg-gray-300 text-gray-700 px-3 py-2 rounded-md hover:bg-gray-400 hover:text-white transition duration-200 text-sm">
                                     <i data-feather="trash-2" class="w-4 h-4 inline"></i>
                                 </button>
                             </div>
@@ -1088,10 +1102,10 @@
                                     <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" title="${journal.notes || '-'}">${journal.notes || '-'}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div class="flex space-x-2">
-                                            <button onclick="editJournal(${journal.id})" class="bg-gray-600 text-white px-2 py-1 rounded hover:bg-gray-700 transition duration-200">
+                                            <button onclick="editJournal(${journal.id})" class="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600 transition duration-200">
                                                 <i data-feather="edit" class="w-4 h-4"></i>
                                             </button>
-                                            <button onclick="deleteJournal(${journal.id})" class="bg-gray-400 text-white px-2 py-1 rounded hover:bg-gray-500 transition duration-200">
+                                            <button onclick="deleteJournal(${journal.id})" class="bg-gray-300 text-gray-700 px-2 py-1 rounded hover:bg-gray-400 hover:text-white transition duration-200">
                                                 <i data-feather="trash-2" class="w-4 h-4"></i>
                                             </button>
                                         </div>
@@ -1136,11 +1150,11 @@
                             </div>
                             
                             <div class="flex space-x-2 pt-3 border-t border-gray-100">
-                                <button onclick="editJournal(${journal.id})" class="flex-1 bg-gray-600 text-white px-3 py-2 rounded-md hover:bg-gray-700 transition duration-200 text-sm flex items-center justify-center">
+                                <button onclick="editJournal(${journal.id})" class="flex-1 bg-gray-500 text-white px-3 py-2 rounded-md hover:bg-gray-600 transition duration-200 text-sm flex items-center justify-center">
                                     <i data-feather="edit" class="w-4 h-4 mr-1"></i>
                                     Edit
                                 </button>
-                                <button onclick="deleteJournal(${journal.id})" class="flex-1 bg-gray-400 text-white px-3 py-2 rounded-md hover:bg-gray-500 transition duration-200 text-sm flex items-center justify-center">
+                                <button onclick="deleteJournal(${journal.id})" class="flex-1 bg-gray-300 text-gray-700 px-3 py-2 rounded-md hover:bg-gray-400 hover:text-white transition duration-200 text-sm flex items-center justify-center">
                                     <i data-feather="trash-2" class="w-4 h-4 mr-1"></i>
                                     Hapus
                                 </button>
@@ -1422,6 +1436,8 @@
                     const importedData = JSON.parse(e.target.result);
                     if (confirm('Import akan mengganti semua data yang ada. Lanjutkan?')) {
                         database = importedData;
+                        // Always ensure admin exists after import
+                        ensureAdminExists();
                         saveDatabase();
                         alert('Database berhasil diimport!');
                         location.reload();
@@ -2028,11 +2044,11 @@
     </script>
 
     <!-- Security Footer Notice -->
-    <div class="fixed bottom-0 left-0 right-0 bg-yellow-100 border-t border-yellow-300 text-yellow-800 text-xs py-2 px-4 text-center">
+    <div id="securityFooter" class="fixed bottom-0 left-0 right-0 bg-yellow-100 border-t border-yellow-300 text-yellow-800 text-xs py-2 px-4 text-center">
         <div class="max-w-7xl mx-auto flex items-center justify-center">
             <i data-feather="alert-triangle" class="w-4 h-4 mr-2"></i>
             Sistem ini hanya digunakan untuk Bapak/Ibu Guru SMKS PGRI 1 Pasuruan.
         </div>
     </div>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d0d40b8183ea86',t:'MTc1NDg0MjkwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96fd924dd6f3514a',t:'MTc1NTMxMjA3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
