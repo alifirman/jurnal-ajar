@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Jurnal Ajar - SMK Jawara</title>
+    <script src="https://unpkg.com/feather-icons@4.29.0/dist/feather.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/jspdf-autotable@3.5.31/dist/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <div class="text-center mb-8">
+                <i data-feather="book-open" class="w-12 h-12 mx-auto text-gray-600 mb-4"></i>
+                <h1 class="text-2xl font-bold text-gray-800">Web Jurnal Ajar</h1>
+                <p class="text-gray-600 mt-2">Sistem Pencatatan Pembelajaran</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <input type="text" id="username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                </div>
+                <button type="submit" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition duration-200">
+                    <i data-feather="log-in" class="w-4 h-4 inline mr-2"></i>
+                    Masuk
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-black-500 mt-2">Belum punya akun?
+                <button id="registerBtn" class="text-gray-600 hover:text-gray-800 text-sm">
+                    Daftar sebagai guru
+                </button>
+                </p> 
+            </div>
+            
+
+            
+            <div id="loginError" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded hidden"></div>
+        </div>
+    </div>
+
+    <!-- Register Screen -->
+    <div id="registerScreen" class="min-h-screen flex items-center justify-center hidden">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <div class="text-center mb-8">
+                <i data-feather="user-plus" class="w-12 h-12 mx-auto text-gray-600 mb-4"></i>
+                <h1 class="text-2xl font-bold text-gray-800">Daftar Guru Baru</h1>
+                <p class="text-gray-600 mt-2">Menunggu konfirmasi admin</p>
+            </div>
+            
+            <form id="registerForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                    <input type="text" id="regName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <input type="text" id="regUsername" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="regPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Mata Pelajaran</label>
+                    <input type="text" id="regSubject" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                </div>
+                <button type="submit" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition duration-200">
+                    <i data-feather="user-plus" class="w-4 h-4 inline mr-2"></i>
+                    Daftar
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <button id="backToLoginBtn" class="text-gray-600 hover:text-gray-800 text-sm">
+                    Kembali ke login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <div class="flex items-center">
+                        <i data-feather="shield" class="w-6 h-6 text-gray-600 mr-3"></i>
+                        <h1 class="text-xl font-semibold text-gray-800">Dashboard Admin</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span id="adminName" class="text-gray-600"></span>
+                        <button id="adminProfile" class="text-gray-600 hover:text-gray-800">
+                            <i data-feather="user" class="w-5 h-5"></i>
+                        </button>
+                        <button id="adminLogout" class="text-gray-600 hover:text-gray-800">
+                            <i data-feather="log-out" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Admin Navigation -->
+        <nav class="bg-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex space-x-8">
+                    <button class="admin-nav-btn active text-white px-3 py-4 text-sm font-medium border-b-2 border-white" data-tab="pending">
+                        <i data-feather="clock" class="w-4 h-4 inline mr-2"></i>
+                        Konfirmasi Guru
+                        <span id="pendingBadge" class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[20px] text-center hidden">0</span>
+                    </button>
+                    <button class="admin-nav-btn text-gray-300 hover:text-white px-3 py-4 text-sm font-medium border-b-2 border-transparent hover:border-gray-300" data-tab="teachers">
+                        <i data-feather="users" class="w-4 h-4 inline mr-2"></i>
+                        Kelola Guru
+                    </button>
+                    <button class="admin-nav-btn text-gray-300 hover:text-white px-3 py-4 text-sm font-medium border-b-2 border-transparent hover:border-gray-300" data-tab="journals">
+                        <i data-feather="book" class="w-4 h-4 inline mr-2"></i>
+                        Semua Jurnal
+                    </button>
+                    <button class="admin-nav-btn text-gray-300 hover:text-white px-3 py-4 text-sm font-medium border-b-2 border-transparent hover:border-gray-300" data-tab="database">
+                        <i data-feather="database" class="w-4 h-4 inline mr-2"></i>
+                        Database
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Admin Content -->
+        <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <!-- Pending Teachers Tab -->
+            <div id="pendingTab" class="admin-tab fade-in">
+                <div class="bg-white shadow rounded-lg">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-900">Guru Menunggu Konfirmasi</h2>
+                    </div>
+                    <div id="pendingTeachers" class="divide-y divide-gray-200"></div>
+                </div>
+            </div>
+
+            <!-- Teachers Management Tab -->
+            <div id="teachersTab" class="admin-tab hidden">
+                <div class="bg-white shadow rounded-lg">
+                    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                        <h2 class="text-lg font-medium text-gray-900">Kelola Guru</h2>
+                        <button id="addTeacherBtn" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200">
+                            <i data-feather="plus" class="w-4 h-4 inline mr-2"></i>
+                            Tambah Guru
+                        </button>
+                    </div>
+                    <div id="teachersList"></div>
+                </div>
+            </div>
+
+            <!-- All Journals Tab -->
+            <div id="journalsTab" class="admin-tab hidden">
+                <div class="bg-white shadow rounded-lg">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-lg font-medium text-gray-900">Semua Jurnal Pembelajaran</h2>
+                            <div class="flex space-x-4 items-center">
+                                <div class="flex space-x-2">
+                                    <select id="adminTeacherFilter" class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                        <option value="">Semua Guru</option>
+                                    </select>
+                                    <select id="adminClassFilter" class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                        <option value="">Semua Kelas</option>
+                                    </select>
+                                    <input type="date" id="adminStartDate" class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                    <span class="text-gray-500 self-center">s/d</span>
+                                    <input type="date" id="adminEndDate" class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                    <button id="adminFilterBtn" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200 text-sm">
+                                        <i data-feather="filter" class="w-4 h-4 inline mr-1"></i>
+                                        Filter
+                                    </button>
+                                    <button id="adminResetFilterBtn" class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition duration-200 text-sm">
+                                        <i data-feather="x" class="w-4 h-4 inline mr-1"></i>
+                                        Reset
+                                    </button>
+                                </div>
+                                <button id="adminExportPdfBtn" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200 text-sm">
+                                    <i data-feather="file-text" class="w-4 h-4 inline mr-1"></i>
+                                    Export PDF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-6 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-700">Tampilkan</span>
+                            <select id="adminItemsPerPage" class="px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                            <span class="text-sm text-gray-700">baris per halaman</span>
+                        </div>
+                        <div id="adminPaginationInfo" class="text-sm text-gray-700"></div>
+                    </div>
+                    <div id="allJournals"></div>
+                    <div id="adminPaginationControls" class="bg-white px-6 py-4 border-t border-gray-200"></div>
+                </div>
+            </div>
+
+            <!-- Database Tab -->
+            <div id="databaseTab" class="admin-tab hidden">
+                <div class="space-y-6">
+                    <!-- Database Management Card -->
+                    <div class="bg-white shadow rounded-lg">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h2 class="text-lg font-medium text-gray-900">Kelola Database Sistem</h2>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="flex flex-wrap gap-4">
+                                <button id="exportBtn" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200">
+                                    <i data-feather="download" class="w-4 h-4 inline mr-2"></i>
+                                    Export Database
+                                </button>
+                                <label class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition duration-200 cursor-pointer">
+                                    <i data-feather="upload" class="w-4 h-4 inline mr-2"></i>
+                                    Import Database
+                                    <input type="file" id="importFile" accept=".json" class="hidden">
+                                </label>
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                <p>• <strong>Export Database:</strong> Unduh semua data sistem dalam format JSON sebagai backup</p>
+                                <p>• <strong>Import Database:</strong> Upload file JSON untuk mengganti seluruh database sistem</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Teacher Import Management Card -->
+                    <div class="bg-white shadow rounded-lg">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h2 class="text-lg font-medium text-gray-900">Import Data Guru</h2>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="flex flex-wrap gap-4">
+                                <button id="downloadTemplateBtn" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200">
+                                    <i data-feather="file-text" class="w-4 h-4 inline mr-2"></i>
+                                    Download Template CSV
+                                </button>
+                                <label class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition duration-200 cursor-pointer">
+                                    <i data-feather="users" class="w-4 h-4 inline mr-2"></i>
+                                    Import Guru CSV
+                                    <input type="file" id="importTeachersFile" accept=".csv" class="hidden">
+                                </label>
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                <p>• <strong>Download Template:</strong> Unduh template CSV dengan format yang benar untuk import guru</p>
+                                <p>• <strong>Import Guru CSV:</strong> Upload file CSV untuk menambah banyak guru sekaligus</p>
+                                <p>• <strong>Format CSV:</strong> nama,username,password,mata_pelajaran</p>
+                                <p>• <strong>Catatan:</strong> Guru yang diimport akan langsung aktif dan disetujui</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Teacher Dashboard -->
+    <div id="teacherDashboard" class="hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <div class="flex items-center">
+                        <i data-feather="book-open" class="w-6 h-6 text-gray-600 mr-3"></i>
+                        <h1 class="text-xl font-semibold text-gray-800">Jurnal Pembelajaran</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span id="teacherName" class="text-gray-600"></span>
+                        <button id="teacherProfile" class="text-gray-600 hover:text-gray-800">
+                            <i data-feather="user" class="w-5 h-5"></i>
+                        </button>
+                        <button id="teacherLogout" class="text-gray-600 hover:text-gray-800">
+                            <i data-feather="log-out" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Teacher Content -->
+        <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
+                        <h2 class="text-lg font-medium text-gray-900">Jurnal Pembelajaran Saya</h2>
+                        <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0 items-stretch sm:items-center">
+                            <!-- Filter controls - hidden on mobile -->
+                            <div class="hidden md:flex flex-wrap gap-2">
+                                <select id="teacherClassFilter" class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                    <option value="">Semua Kelas</option>
+                                </select>
+                                <input type="date" id="teacherStartDate" class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                <span class="text-gray-500 self-center text-sm">s/d</span>
+                                <input type="date" id="teacherEndDate" class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-500">
+                            </div>
+                            <div class="flex gap-2">
+                                <!-- Filter buttons - hidden on mobile -->
+                                <button id="teacherFilterBtn" class="hidden md:inline-flex bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200 text-sm">
+                                    <i data-feather="filter" class="w-4 h-4 inline mr-1"></i>
+                                    Filter
+                                </button>
+                                <button id="teacherResetFilterBtn" class="hidden md:inline-flex bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition duration-200 text-sm">
+                                    <i data-feather="x" class="w-4 h-4 inline mr-1"></i>
+                                    Reset
+                                </button>
+                                <!-- Export and Add buttons - always visible -->
+                                <button id="teacherExportPdfBtn" class="bg-gray-700 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-gray-800 transition duration-200 text-xs sm:text-sm flex-1 sm:flex-none">
+                                    <i data-feather="file-text" class="w-4 h-4 inline mr-1"></i>
+                                    <span class="hidden sm:inline">Export PDF</span>
+                                    <span class="sm:hidden">PDF</span>
+                                </button>
+                                <button id="addJournalBtn" class="bg-gray-800 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200 text-xs sm:text-sm flex-1 sm:flex-none">
+                                    <i data-feather="plus" class="w-4 h-4 inline mr-1 sm:mr-2"></i>
+                                    <span class="hidden sm:inline">Tambah Jurnal</span>
+                                    <span class="sm:hidden">Tambah</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-gray-700">Tampilkan</span>
+                        <select id="teacherItemsPerPage" class="px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-500">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span class="text-sm text-gray-700">baris per halaman</span>
+                    </div>
+                    <div id="teacherPaginationInfo" class="text-sm text-gray-700"></div>
+                </div>
+                <div id="teacherJournals"></div>
+                <div id="teacherPaginationControls" class="bg-white px-6 py-4 border-t border-gray-200"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add/Edit Teacher Modal -->
+    <div id="teacherModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 id="teacherModalTitle" class="text-lg font-medium text-gray-900">Tambah Guru</h3>
+            </div>
+            <form id="teacherForm" class="p-6 space-y-4">
+                <input type="hidden" id="teacherId">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                    <input type="text" id="teacherName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <input type="text" id="teacherUsername" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="teacherPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Mata Pelajaran</label>
+                    <input type="text" id="teacherSubject" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select id="teacherStatus" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                        <option value="true">Aktif</option>
+                        <option value="false">Tidak Aktif</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" id="cancelTeacher" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-200">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition duration-200">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Profile Edit Modal -->
+    <div id="profileModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Edit Profil</h3>
+            </div>
+            <form id="profileForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                    <input type="text" id="profileName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <input type="text" id="profileUsername" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                </div>
+                <div id="profileSubjectDiv">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Mata Pelajaran</label>
+                    <input type="text" id="profileSubject" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password Baru (kosongkan jika tidak ingin mengubah)</label>
+                    <input type="password" id="profilePassword" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500">
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" id="cancelProfile" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-200">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition duration-200">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Journal Modal -->
+    <div id="journalModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 id="journalModalTitle" class="text-lg font-medium text-gray-900">Tambah Jurnal</h3>
+            </div>
+            <form id="journalForm" class="p-6 space-y-4">
+                <input type="hidden" id="journalId">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal</label>
+                        <input type="date" id="journalDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Kelas</label>
+                        <input type="text" id="journalClass" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Jam Ke- (Mulai)</label>
+                        <select id="journalStartTime" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                            <option value="">Pilih jam ke-</option>
+                            <option value="1">Jam ke-1</option>
+                            <option value="2">Jam ke-2</option>
+                            <option value="3">Jam ke-3</option>
+                            <option value="4">Jam ke-4</option>
+                            <option value="5">Jam ke-5</option>
+                            <option value="6">Jam ke-6</option>
+                            <option value="7">Jam ke-7</option>
+                            <option value="8">Jam ke-8</option>
+                            <option value="9">Jam ke-9</option>
+                            <option value="10">Jam ke-10</option>
+                            <option value="11">Jam ke-11</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Jam Ke- (Selesai)</label>
+                        <select id="journalEndTime" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                            <option value="">Pilih jam ke-</option>
+                            <option value="1">Jam ke-1</option>
+                            <option value="2">Jam ke-2</option>
+                            <option value="3">Jam ke-3</option>
+                            <option value="4">Jam ke-4</option>
+                            <option value="5">Jam ke-5</option>
+                            <option value="6">Jam ke-6</option>
+                            <option value="7">Jam ke-7</option>
+                            <option value="8">Jam ke-8</option>
+                            <option value="9">Jam ke-9</option>
+                            <option value="10">Jam ke-10</option>
+                            <option value="11">Jam ke-11</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Materi Pembelajaran</label>
+                    <input type="text" id="journalMaterial" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Kegiatan Pembelajaran</label>
+                    <textarea id="journalActivity" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500" required></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label>
+                    <textarea id="journalNotes" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" id="cancelJournal" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-200">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition duration-200">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Simple hash function for password security
+        function simpleHash(str) {
+            let hash = 0;
+            if (str.length === 0) return hash.toString();
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32-bit integer
+            }
+            // Add salt and make it positive
+            hash = Math.abs(hash + 12345);
+            return hash.toString(16); // Convert to hexadecimal
+        }
+
+        // Database structure
+        let database = {
+            users: [
+                { id: 1, username: 'admin', password: simpleHash('admin123'), role: 'admin', name: 'Administrator', approved: true },
+                { id: 2, username: 'sari', password: simpleHash('sari123'), role: 'teacher', name: 'Sari Dewi', subject: 'Matematika', approved: true, active: true },
+                { id: 3, username: 'budi', password: simpleHash('budi123'), role: 'teacher', name: 'Budi Santoso', subject: 'Bahasa Indonesia', approved: true, active: true },
+                { id: 4, username: 'rina', password: simpleHash('rina123'), role: 'teacher', name: 'Rina Wati', subject: 'IPA', approved: true, active: false }
+            ],
+            pendingUsers: [
+                { id: 5, username: 'ahmad', password: simpleHash('ahmad123'), role: 'teacher', name: 'Ahmad Fauzi', subject: 'Sejarah', approved: false }
+            ],
+            journals: [
+                { id: 1, teacherId: 2, date: '2024-01-15', class: 'VII-A', startTime: '1', endTime: '2', material: 'Bilangan Bulat', activity: 'Menjelaskan konsep bilangan bulat dan operasinya dengan menggunakan media pembelajaran interaktif', notes: 'Siswa antusias mengikuti pembelajaran' },
+                { id: 2, teacherId: 2, date: '2024-01-16', class: 'VII-B', startTime: '3', endTime: '4', material: 'Pecahan', activity: 'Praktik mengerjakan soal pecahan dengan metode diskusi kelompok', notes: 'Perlu remedial untuk 3 siswa' },
+                { id: 3, teacherId: 3, date: '2024-01-15', class: 'VIII-A', startTime: '5', endTime: '6', material: 'Puisi', activity: 'Membaca dan menganalisis puisi karya Chairil Anwar dengan metode ceramah dan tanya jawab', notes: 'Siswa mampu memahami makna puisi dengan baik' },
+                { id: 4, teacherId: 4, date: '2024-01-17', class: 'IX-A', startTime: '2', endTime: '3', material: 'Sistem Reproduksi', activity: 'Menjelaskan sistem reproduksi manusia menggunakan model anatomi dan video pembelajaran', notes: 'Materi sensitif disampaikan dengan pendekatan yang tepat' }
+            ]
+        };
+
+        // Load database from localStorage
+        function loadDatabase() {
+            const saved = localStorage.getItem('journalAjarDB');
+            if (saved) {
+                database = JSON.parse(saved);
+            }
+        }
+
+        // Save database to localStorage
+        function saveDatabase() {
+            localStorage.setItem('journalAjarDB', JSON.stringify(database));
+        }
+
+        // Current user
+        let currentUser = null;
+
+        // Filter states
+        let adminDateFilter = { start: null, end: null, teacher: null, class: null };
+        let teacherDateFilter = { start: null, end: null, class: null };
+
+        // Pagination states
+        let adminPagination = { currentPage: 1, itemsPerPage: 10 };
+        let teacherPagination = { currentPage: 1, itemsPerPage: 10 };
+
+        // Initialize app
+        function init() {
+            loadDatabase();
+            feather.replace();
+            setupEventListeners();
+            setupDateValidation();
+        }
+
+        // Setup date validation
+        function setupDateValidation() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Set max date for journal date input
+            const journalDateInput = document.getElementById('journalDate');
+            if (journalDateInput) {
+                journalDateInput.setAttribute('max', today);
+            }
+            
+            // Set max date for filter inputs
+            const filterInputs = [
+                'adminStartDate', 'adminEndDate', 
+                'teacherStartDate', 'teacherEndDate'
+            ];
+            
+            filterInputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.setAttribute('max', today);
+                }
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('registerBtn').addEventListener('click', showRegisterScreen);
+            document.getElementById('backToLoginBtn').addEventListener('click', showLoginScreen);
+            document.getElementById('registerForm').addEventListener('submit', handleRegister);
+
+            // Logout buttons
+            document.getElementById('adminLogout').addEventListener('click', logout);
+            document.getElementById('teacherLogout').addEventListener('click', logout);
+
+            // Profile buttons
+            document.getElementById('adminProfile').addEventListener('click', openProfileModal);
+            document.getElementById('teacherProfile').addEventListener('click', openProfileModal);
+
+            // Admin navigation
+            document.querySelectorAll('.admin-nav-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => switchAdminTab(e.target.dataset.tab));
+            });
+
+            // Modal controls
+            document.getElementById('addTeacherBtn').addEventListener('click', () => openTeacherModal());
+            document.getElementById('addJournalBtn').addEventListener('click', () => openJournalModal());
+            document.getElementById('cancelTeacher').addEventListener('click', closeTeacherModal);
+            document.getElementById('cancelJournal').addEventListener('click', closeJournalModal);
+            document.getElementById('cancelProfile').addEventListener('click', closeProfileModal);
+
+            // Forms
+            document.getElementById('teacherForm').addEventListener('submit', handleTeacherForm);
+            document.getElementById('journalForm').addEventListener('submit', handleJournalForm);
+            document.getElementById('profileForm').addEventListener('submit', handleProfileForm);
+
+            // Database operations
+            document.getElementById('exportBtn').addEventListener('click', exportDatabase);
+            document.getElementById('importFile').addEventListener('change', importDatabase);
+            document.getElementById('importTeachersFile').addEventListener('change', importTeachersCSV);
+            document.getElementById('downloadTemplateBtn').addEventListener('click', downloadCSVTemplate);
+
+            // Filter operations
+            document.getElementById('adminFilterBtn').addEventListener('click', filterAdminJournals);
+            document.getElementById('adminResetFilterBtn').addEventListener('click', resetAdminFilter);
+            document.getElementById('adminExportPdfBtn').addEventListener('click', exportAdminJournalsPdf);
+            document.getElementById('teacherFilterBtn').addEventListener('click', filterTeacherJournals);
+            document.getElementById('teacherResetFilterBtn').addEventListener('click', resetTeacherFilter);
+            document.getElementById('teacherExportPdfBtn').addEventListener('click', exportTeacherJournalsPdf);
+
+            // Pagination operations
+            document.getElementById('adminItemsPerPage').addEventListener('change', changeAdminItemsPerPage);
+            document.getElementById('teacherItemsPerPage').addEventListener('change', changeTeacherItemsPerPage);
+        }
+
+        // Authentication functions
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const hashedPassword = simpleHash(password);
+
+            const user = database.users.find(u => u.username === username && u.password === hashedPassword && u.approved);
+            
+            if (user && (user.role === 'admin' || user.active !== false)) {
+                currentUser = user;
+                if (user.role === 'admin') {
+                    showAdminDashboard();
+                } else {
+                    showTeacherDashboard();
+                }
+                document.getElementById('loginError').classList.add('hidden');
+            } else {
+                document.getElementById('loginError').textContent = 'Username atau password salah, akun belum dikonfirmasi admin, atau akun tidak aktif';
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+            const subject = document.getElementById('regSubject').value;
+
+            // Check if username already exists
+            if (database.users.find(u => u.username === username) || database.pendingUsers.find(u => u.username === username)) {
+                alert('Username sudah digunakan');
+                return;
+            }
+
+            const newUser = {
+                id: Date.now(),
+                name,
+                username,
+                password: simpleHash(password),
+                subject,
+                role: 'teacher',
+                approved: false
+            };
+
+            database.pendingUsers.push(newUser);
+            saveDatabase();
+            updatePendingBadge();
+            
+            alert('Pendaftaran berhasil! Menunggu konfirmasi admin.');
+            showLoginScreen();
+        }
+
+        function logout() {
+            currentUser = null;
+            showLoginScreen();
+        }
+
+        // Screen navigation
+        function showLoginScreen() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('registerScreen').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('teacherDashboard').classList.add('hidden');
+            document.getElementById('loginForm').reset();
+        }
+
+        function showRegisterScreen() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('registerScreen').classList.remove('hidden');
+        }
+
+        function showAdminDashboard() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            document.getElementById('adminName').textContent = currentUser.name;
+            updatePendingBadge();
+            loadPendingTeachers();
+            feather.replace();
+        }
+
+        function showTeacherDashboard() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('teacherDashboard').classList.remove('hidden');
+            document.getElementById('teacherName').textContent = currentUser.name;
+            loadTeacherJournals();
+            feather.replace();
+        }
+
+        // Admin functions
+        function switchAdminTab(tab) {
+            // Update navigation
+            document.querySelectorAll('.admin-nav-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-white', 'border-white');
+                btn.classList.add('text-gray-300', 'border-transparent');
+            });
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active', 'text-white', 'border-white');
+            document.querySelector(`[data-tab="${tab}"]`).classList.remove('text-gray-300', 'border-transparent');
+
+            // Show/hide tabs
+            document.querySelectorAll('.admin-tab').forEach(tabEl => tabEl.classList.add('hidden'));
+            document.getElementById(`${tab}Tab`).classList.remove('hidden');
+
+            // Load data based on tab
+            switch(tab) {
+                case 'pending':
+                    loadPendingTeachers();
+                    break;
+                case 'teachers':
+                    loadTeachers();
+                    break;
+                case 'journals':
+                    loadAllJournals();
+                    break;
+            }
+            feather.replace();
+        }
+
+        function loadPendingTeachers() {
+            const container = document.getElementById('pendingTeachers');
+            updatePendingBadge();
+            
+            if (database.pendingUsers.length === 0) {
+                container.innerHTML = '<div class="p-6 text-center text-gray-500">Tidak ada guru yang menunggu konfirmasi</div>';
+                return;
+            }
+
+            container.innerHTML = database.pendingUsers.map(user => `
+                <div class="p-6 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900">${user.name}</h3>
+                        <p class="text-gray-600">Username: ${user.username}</p>
+                        <p class="text-gray-600">Mata Pelajaran: ${user.subject}</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="approveTeacher(${user.id})" class="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 text-sm">
+                            <i data-feather="check" class="w-4 h-4 inline mr-1"></i>
+                            Setujui
+                        </button>
+                        <button onclick="rejectTeacher(${user.id})" class="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500 text-sm">
+                            <i data-feather="x" class="w-4 h-4 inline mr-1"></i>
+                            Tolak
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            feather.replace();
+        }
+
+        function updatePendingBadge() {
+            const badge = document.getElementById('pendingBadge');
+            if (!badge) return;
+            
+            const count = database.pendingUsers.length;
+            
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function approveTeacher(id) {
+            const userIndex = database.pendingUsers.findIndex(u => u.id === id);
+            if (userIndex !== -1) {
+                const user = database.pendingUsers[userIndex];
+                user.approved = true;
+                user.active = true; // Set as active by default when approved
+                database.users.push(user);
+                database.pendingUsers.splice(userIndex, 1);
+                saveDatabase();
+                loadPendingTeachers();
+                updatePendingBadge();
+            }
+        }
+
+        function rejectTeacher(id) {
+            const userIndex = database.pendingUsers.findIndex(u => u.id === id);
+            if (userIndex !== -1) {
+                database.pendingUsers.splice(userIndex, 1);
+                saveDatabase();
+                loadPendingTeachers();
+                updatePendingBadge();
+            }
+        }
+
+        function loadTeachers() {
+            const teachers = database.users.filter(u => u.role === 'teacher');
+            const container = document.getElementById('teachersList');
+            
+            if (teachers.length === 0) {
+                container.innerHTML = '<div class="p-6 text-center text-gray-500">Belum ada guru terdaftar</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${teachers.map(teacher => `
+                        <div class="bg-gray-50 rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow duration-200 ${teacher.active === false ? 'opacity-75' : ''}">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 ${teacher.active === false ? 'bg-gray-400' : 'bg-gray-600'} rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                                    ${teacher.name ? teacher.name.charAt(0).toUpperCase() : teacher.username ? teacher.username.charAt(0).toUpperCase() : '?'}
+                                </div>
+                                <div class="ml-4 flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-lg font-semibold text-gray-900">${teacher.name || teacher.username || 'Unknown'}</h3>
+                                        <span class="px-2 py-1 text-xs font-medium rounded-full ${teacher.active === false ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800'}">
+                                            ${teacher.active === false ? 'Tidak Aktif' : 'Aktif'}
+                                        </span>
+                                    </div>
+                                    <p class="text-sm text-gray-600">@${teacher.username || 'unknown'}</p>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="flex items-center text-gray-600 mb-2">
+                                    <i data-feather="book" class="w-4 h-4 mr-2"></i>
+                                    <span class="text-sm">${teacher.subject || 'Tidak ada mata pelajaran'}</span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <i data-feather="calendar" class="w-4 h-4 mr-2"></i>
+                                    <span class="text-sm">${database.journals.filter(j => j.teacherId === teacher.id).length} jurnal</span>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="editTeacher(${teacher.id})" class="flex-1 bg-gray-600 text-white px-3 py-2 rounded-md hover:bg-gray-700 transition duration-200 text-sm">
+                                    <i data-feather="edit" class="w-4 h-4 inline mr-1"></i>
+                                    Edit
+                                </button>
+                                <button onclick="toggleTeacherStatus(${teacher.id})" class="flex-1 ${teacher.active === false ? 'bg-gray-200 hover:bg-gray-300' : 'bg-gray-100 hover:bg-gray-200'} text-black px-3 py-2 rounded-md transition duration-200 text-sm">
+                                    <i data-feather="${teacher.active === false ? 'play' : 'pause'}" class="w-4 h-4 inline mr-1"></i>
+                                    ${teacher.active === false ? 'Aktifkan' : 'Nonaktifkan'}
+                                </button>
+                                <button onclick="deleteTeacher(${teacher.id})" class="bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-700 transition duration-200 text-sm">
+                                    <i data-feather="trash-2" class="w-4 h-4 inline"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            feather.replace();
+        }
+
+        function loadAllJournals() {
+            const container = document.getElementById('allJournals');
+            let journals = [...database.journals];
+
+            // Apply filters
+            if (adminDateFilter.start || adminDateFilter.end || adminDateFilter.teacher || adminDateFilter.class) {
+                journals = journals.filter(journal => {
+                    // Date filter
+                    if (adminDateFilter.start || adminDateFilter.end) {
+                        const journalDate = new Date(journal.date);
+                        const startDate = adminDateFilter.start ? new Date(adminDateFilter.start) : null;
+                        const endDate = adminDateFilter.end ? new Date(adminDateFilter.end) : null;
+                        
+                        if (startDate && journalDate < startDate) return false;
+                        if (endDate && journalDate > endDate) return false;
+                    }
+                    
+                    // Teacher filter
+                    if (adminDateFilter.teacher && journal.teacherId !== parseInt(adminDateFilter.teacher)) {
+                        return false;
+                    }
+                    
+                    // Class filter
+                    if (adminDateFilter.class && journal.class !== adminDateFilter.class) {
+                        return false;
+                    }
+                    
+                    return true;
+                });
+            }
+
+            // Populate teacher filter dropdown
+            const teacherFilter = document.getElementById('adminTeacherFilter');
+            const teachers = database.users.filter(u => u.role === 'teacher');
+            teacherFilter.innerHTML = '<option value="">Semua Guru</option>' + 
+                teachers.map(teacher => `<option value="${teacher.id}" ${adminDateFilter.teacher == teacher.id ? 'selected' : ''}>${teacher.name || teacher.username}</option>`).join('');
+
+            // Populate class filter dropdown
+            const classFilter = document.getElementById('adminClassFilter');
+            const classes = [...new Set(database.journals.map(j => j.class))].sort();
+            classFilter.innerHTML = '<option value="">Semua Kelas</option>' + 
+                classes.map(className => `<option value="${className}" ${adminDateFilter.class === className ? 'selected' : ''}>${className}</option>`).join('');
+
+            // Apply pagination
+            const totalItems = journals.length;
+            const totalPages = Math.ceil(totalItems / adminPagination.itemsPerPage);
+            
+            // Ensure current page is valid
+            if (adminPagination.currentPage > totalPages) {
+                adminPagination.currentPage = Math.max(1, totalPages);
+            }
+            
+            const startIndex = (adminPagination.currentPage - 1) * adminPagination.itemsPerPage;
+            const endIndex = startIndex + adminPagination.itemsPerPage;
+            const paginatedJournals = journals.slice(startIndex, endIndex);
+
+            // Update pagination info
+            updateAdminPaginationInfo(totalItems, startIndex, endIndex);
+            renderAdminPaginationControls(totalPages);
+
+            if (totalItems === 0) {
+                container.innerHTML = '<div class="p-6 text-center text-gray-500">Tidak ada jurnal pembelajaran yang sesuai filter</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="table-container">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guru</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kelas</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Materi</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kegiatan</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catatan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            ${paginatedJournals.map(journal => {
+                                const teacher = database.users.find(u => u.id === journal.teacherId);
+                                return `
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${journal.date}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center text-white text-xs font-semibold mr-3">
+                                                    ${teacher && teacher.name ? teacher.name.charAt(0).toUpperCase() : teacher && teacher.username ? teacher.username.charAt(0).toUpperCase() : '?'}
+                                                </div>
+                                                <div>
+                                                    <div class="text-sm font-medium text-gray-900">${teacher ? (teacher.name || teacher.username || 'Unknown') : 'Unknown'}</div>
+                                                    <div class="text-sm text-gray-500">${teacher ? (teacher.subject || 'Tidak ada mata pelajaran') : '-'}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${journal.class}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Jam ke-${journal.startTime} - ${journal.endTime}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate" title="${journal.material}">${journal.material}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate" title="${journal.activity}">${journal.activity}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" title="${journal.notes || '-'}">${journal.notes || '-'}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // Teacher functions
+        function loadTeacherJournals() {
+            let journals = database.journals.filter(j => j.teacherId === currentUser.id);
+            const container = document.getElementById('teacherJournals');
+
+            // Apply filters
+            if (teacherDateFilter.start || teacherDateFilter.end || teacherDateFilter.class) {
+                journals = journals.filter(journal => {
+                    // Date filter
+                    if (teacherDateFilter.start || teacherDateFilter.end) {
+                        const journalDate = new Date(journal.date);
+                        const startDate = teacherDateFilter.start ? new Date(teacherDateFilter.start) : null;
+                        const endDate = teacherDateFilter.end ? new Date(teacherDateFilter.end) : null;
+                        
+                        if (startDate && journalDate < startDate) return false;
+                        if (endDate && journalDate > endDate) return false;
+                    }
+                    
+                    // Class filter
+                    if (teacherDateFilter.class && journal.class !== teacherDateFilter.class) {
+                        return false;
+                    }
+                    
+                    return true;
+                });
+            }
+
+            // Populate class filter dropdown
+            const classFilter = document.getElementById('teacherClassFilter');
+            const teacherJournals = database.journals.filter(j => j.teacherId === currentUser.id);
+            const classes = [...new Set(teacherJournals.map(j => j.class))].sort();
+            classFilter.innerHTML = '<option value="">Semua Kelas</option>' + 
+                classes.map(className => `<option value="${className}" ${teacherDateFilter.class === className ? 'selected' : ''}>${className}</option>`).join('');
+            
+            // Apply pagination
+            const totalItems = journals.length;
+            const totalPages = Math.ceil(totalItems / teacherPagination.itemsPerPage);
+            
+            // Ensure current page is valid
+            if (teacherPagination.currentPage > totalPages) {
+                teacherPagination.currentPage = Math.max(1, totalPages);
+            }
+            
+            const startIndex = (teacherPagination.currentPage - 1) * teacherPagination.itemsPerPage;
+            const endIndex = startIndex + teacherPagination.itemsPerPage;
+            const paginatedJournals = journals.slice(startIndex, endIndex);
+
+            // Update pagination info
+            updateTeacherPaginationInfo(totalItems, startIndex, endIndex);
+            renderTeacherPaginationControls(totalPages);
+            
+            if (totalItems === 0) {
+                container.innerHTML = '<div class="p-6 text-center text-gray-500">Tidak ada jurnal pembelajaran yang sesuai filter</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <!-- Desktop Table View -->
+                <div class="hidden md:block overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kelas</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Materi</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kegiatan</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catatan</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            ${paginatedJournals.map(journal => `
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${journal.date}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${journal.class}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Jam ke-${journal.startTime} - ${journal.endTime}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate" title="${journal.material}">${journal.material}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate" title="${journal.activity}">${journal.activity}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" title="${journal.notes || '-'}">${journal.notes || '-'}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex space-x-2">
+                                            <button onclick="editJournal(${journal.id})" class="bg-gray-600 text-white px-2 py-1 rounded hover:bg-gray-700 transition duration-200">
+                                                <i data-feather="edit" class="w-4 h-4"></i>
+                                            </button>
+                                            <button onclick="deleteJournal(${journal.id})" class="bg-gray-400 text-white px-2 py-1 rounded hover:bg-gray-500 transition duration-200">
+                                                <i data-feather="trash-2" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Card View -->
+                <div class="md:hidden space-y-4 p-4">
+                    ${paginatedJournals.map(journal => `
+                        <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm font-medium text-gray-900">${journal.date}</span>
+                                        <span class="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">${journal.class}</span>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mb-2">Jam ke-${journal.startTime} - ${journal.endTime}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-2 mb-4">
+                                <div>
+                                    <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Materi:</span>
+                                    <p class="text-sm text-gray-900 mt-1">${journal.material}</p>
+                                </div>
+                                
+                                <div>
+                                    <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Kegiatan:</span>
+                                    <p class="text-sm text-gray-900 mt-1">${journal.activity}</p>
+                                </div>
+                                
+                                ${journal.notes ? `
+                                    <div>
+                                        <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Catatan:</span>
+                                        <p class="text-sm text-gray-600 mt-1">${journal.notes}</p>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <div class="flex space-x-2 pt-3 border-t border-gray-100">
+                                <button onclick="editJournal(${journal.id})" class="flex-1 bg-gray-600 text-white px-3 py-2 rounded-md hover:bg-gray-700 transition duration-200 text-sm flex items-center justify-center">
+                                    <i data-feather="edit" class="w-4 h-4 mr-1"></i>
+                                    Edit
+                                </button>
+                                <button onclick="deleteJournal(${journal.id})" class="flex-1 bg-gray-400 text-white px-3 py-2 rounded-md hover:bg-gray-500 transition duration-200 text-sm flex items-center justify-center">
+                                    <i data-feather="trash-2" class="w-4 h-4 mr-1"></i>
+                                    Hapus
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            feather.replace();
+        }
+
+        // Modal functions
+        function openTeacherModal(teacherId = null) {
+            const modal = document.getElementById('teacherModal');
+            const title = document.getElementById('teacherModalTitle');
+            const form = document.getElementById('teacherForm');
+            
+            if (teacherId) {
+                const teacher = database.users.find(u => u.id === teacherId);
+                title.textContent = 'Edit Guru';
+                document.getElementById('teacherId').value = teacher.id;
+                document.getElementById('teacherName').value = teacher.name;
+                document.getElementById('teacherUsername').value = teacher.username;
+                document.getElementById('teacherPassword').value = teacher.password;
+                document.getElementById('teacherSubject').value = teacher.subject;
+                document.getElementById('teacherStatus').value = teacher.active !== false ? 'true' : 'false';
+            } else {
+                title.textContent = 'Tambah Guru';
+                form.reset();
+            }
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeTeacherModal() {
+            document.getElementById('teacherModal').classList.add('hidden');
+            document.getElementById('teacherModal').classList.remove('flex');
+        }
+
+        function openJournalModal(journalId = null) {
+            const modal = document.getElementById('journalModal');
+            const title = document.getElementById('journalModalTitle');
+            const form = document.getElementById('journalForm');
+            
+            if (journalId) {
+                const journal = database.journals.find(j => j.id === journalId);
+                title.textContent = 'Edit Jurnal';
+                document.getElementById('journalId').value = journal.id;
+                document.getElementById('journalDate').value = journal.date;
+                document.getElementById('journalClass').value = journal.class;
+                document.getElementById('journalStartTime').value = journal.startTime;
+                document.getElementById('journalEndTime').value = journal.endTime;
+                document.getElementById('journalMaterial').value = journal.material;
+                document.getElementById('journalActivity').value = journal.activity;
+                document.getElementById('journalNotes').value = journal.notes || '';
+            } else {
+                title.textContent = 'Tambah Jurnal';
+                form.reset();
+                // Set today's date as default
+                document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
+            }
+            
+            // Set max date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('journalDate').setAttribute('max', today);
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeJournalModal() {
+            document.getElementById('journalModal').classList.add('hidden');
+            document.getElementById('journalModal').classList.remove('flex');
+        }
+
+        function openProfileModal() {
+            const modal = document.getElementById('profileModal');
+            const form = document.getElementById('profileForm');
+            
+            // Fill form with current user data
+            document.getElementById('profileName').value = currentUser.name || '';
+            document.getElementById('profileUsername').value = currentUser.username || '';
+            document.getElementById('profilePassword').value = '';
+            
+            // Show/hide subject field based on role
+            const subjectDiv = document.getElementById('profileSubjectDiv');
+            if (currentUser.role === 'teacher') {
+                subjectDiv.style.display = 'block';
+                document.getElementById('profileSubject').value = currentUser.subject || '';
+            } else {
+                subjectDiv.style.display = 'none';
+            }
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+            document.getElementById('profileModal').classList.remove('flex');
+        }
+
+        // Form handlers
+        function handleTeacherForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('teacherId').value;
+            const name = document.getElementById('teacherName').value;
+            const username = document.getElementById('teacherUsername').value;
+            const password = document.getElementById('teacherPassword').value;
+            const subject = document.getElementById('teacherSubject').value;
+            const active = document.getElementById('teacherStatus').value === 'true';
+
+            if (id) {
+                // Edit existing teacher
+                const teacherIndex = database.users.findIndex(u => u.id === parseInt(id));
+                if (teacherIndex !== -1) {
+                    database.users[teacherIndex] = {
+                        ...database.users[teacherIndex],
+                        name, username, password: simpleHash(password), subject, active
+                    };
+                }
+            } else {
+                // Add new teacher
+                const newTeacher = {
+                    id: Date.now(),
+                    name, username, password: simpleHash(password), subject, active,
+                    role: 'teacher',
+                    approved: true
+                };
+                database.users.push(newTeacher);
+            }
+
+            saveDatabase();
+            closeTeacherModal();
+            loadTeachers();
+        }
+
+        function handleJournalForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('journalId').value;
+            const date = document.getElementById('journalDate').value;
+            const className = document.getElementById('journalClass').value;
+            const startTime = document.getElementById('journalStartTime').value;
+            const endTime = document.getElementById('journalEndTime').value;
+            const material = document.getElementById('journalMaterial').value;
+            const activity = document.getElementById('journalActivity').value;
+            const notes = document.getElementById('journalNotes').value;
+
+            if (id) {
+                // Edit existing journal
+                const journalIndex = database.journals.findIndex(j => j.id === parseInt(id));
+                if (journalIndex !== -1) {
+                    database.journals[journalIndex] = {
+                        ...database.journals[journalIndex],
+                        date, class: className, startTime, endTime, material, activity, notes
+                    };
+                }
+            } else {
+                // Add new journal
+                const newJournal = {
+                    id: Date.now(),
+                    teacherId: currentUser.id,
+                    date, class: className, startTime, endTime, material, activity, notes
+                };
+                database.journals.push(newJournal);
+            }
+
+            saveDatabase();
+            closeJournalModal();
+            loadTeacherJournals();
+        }
+
+        function handleProfileForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('profileName').value;
+            const username = document.getElementById('profileUsername').value;
+            const password = document.getElementById('profilePassword').value;
+            const subject = document.getElementById('profileSubject').value;
+
+            // Check if username is already taken by another user
+            const existingUser = database.users.find(u => u.username === username && u.id !== currentUser.id);
+            if (existingUser) {
+                alert('Username sudah digunakan oleh user lain');
+                return;
+            }
+
+            // Update current user data
+            const userIndex = database.users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                database.users[userIndex].name = name;
+                database.users[userIndex].username = username;
+                
+                // Only update password if provided
+                if (password.trim()) {
+                    database.users[userIndex].password = simpleHash(password);
+                }
+                
+                // Update subject for teachers
+                if (currentUser.role === 'teacher') {
+                    database.users[userIndex].subject = subject;
+                }
+
+                // Update current user object
+                currentUser = database.users[userIndex];
+                
+                // Update display names
+                if (currentUser.role === 'admin') {
+                    document.getElementById('adminName').textContent = currentUser.name;
+                } else {
+                    document.getElementById('teacherName').textContent = currentUser.name;
+                }
+            }
+
+            saveDatabase();
+            closeProfileModal();
+            alert('Profil berhasil diperbarui!');
+        }
+
+        // CRUD operations
+        function editTeacher(id) {
+            openTeacherModal(id);
+        }
+
+        function toggleTeacherStatus(id) {
+            const teacher = database.users.find(u => u.id === id);
+            if (teacher) {
+                const newStatus = teacher.active === false;
+                const action = newStatus ? 'mengaktifkan' : 'menonaktifkan';
+                
+                if (confirm(`Yakin ingin ${action} guru ${teacher.name || teacher.username}?`)) {
+                    teacher.active = newStatus;
+                    saveDatabase();
+                    loadTeachers();
+                }
+            }
+        }
+
+        function deleteTeacher(id) {
+            if (confirm('Yakin ingin menghapus guru ini?')) {
+                database.users = database.users.filter(u => u.id !== id);
+                database.journals = database.journals.filter(j => j.teacherId !== id);
+                saveDatabase();
+                loadTeachers();
+            }
+        }
+
+        function editJournal(id) {
+            openJournalModal(id);
+        }
+
+        function deleteJournal(id) {
+            if (confirm('Yakin ingin menghapus jurnal ini?')) {
+                database.journals = database.journals.filter(j => j.id !== id);
+                saveDatabase();
+                loadTeacherJournals();
+            }
+        }
+
+        // Database operations
+        function exportDatabase() {
+            const dataStr = JSON.stringify(database, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `jurnal_ajar_backup_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importDatabase(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (confirm('Import akan mengganti semua data yang ada. Lanjutkan?')) {
+                        database = importedData;
+                        saveDatabase();
+                        alert('Database berhasil diimport!');
+                        location.reload();
+                    }
+                } catch (error) {
+                    alert('File tidak valid!');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // CSV Import Functions
+        function downloadCSVTemplate() {
+            const csvContent = 'nama,username,password,mata_pelajaran\n' +
+                              'Contoh Guru,guru1,password123,Matematika\n' +
+                              'Guru Kedua,guru2,password456,Bahasa Indonesia';
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'template_guru.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function importTeachersCSV(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const csvData = e.target.result;
+                    const lines = csvData.split('\n');
+                    
+                    if (lines.length < 2) {
+                        alert('File CSV kosong atau tidak valid!');
+                        return;
+                    }
+
+                    // Parse header
+                    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+                    const requiredHeaders = ['nama', 'username', 'password', 'mata_pelajaran'];
+                    
+                    // Check if all required headers exist
+                    const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
+                    if (missingHeaders.length > 0) {
+                        alert(`Header yang diperlukan tidak ditemukan: ${missingHeaders.join(', ')}\n\nFormat yang benar: nama,username,password,mata_pelajaran`);
+                        return;
+                    }
+
+                    const newTeachers = [];
+                    const errors = [];
+                    const duplicateUsernames = [];
+
+                    // Process each line
+                    for (let i = 1; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (!line) continue; // Skip empty lines
+
+                        const values = line.split(',').map(v => v.trim());
+                        
+                        if (values.length !== headers.length) {
+                            errors.push(`Baris ${i + 1}: Jumlah kolom tidak sesuai`);
+                            continue;
+                        }
+
+                        const teacherData = {};
+                        headers.forEach((header, index) => {
+                            teacherData[header] = values[index];
+                        });
+
+                        // Validate required fields
+                        if (!teacherData.nama || !teacherData.username || !teacherData.password || !teacherData.mata_pelajaran) {
+                            errors.push(`Baris ${i + 1}: Ada field yang kosong`);
+                            continue;
+                        }
+
+                        // Check for duplicate username in existing database
+                        const existingUser = database.users.find(u => u.username === teacherData.username);
+                        const pendingUser = database.pendingUsers.find(u => u.username === teacherData.username);
+                        
+                        if (existingUser || pendingUser) {
+                            duplicateUsernames.push(`Baris ${i + 1}: Username "${teacherData.username}" sudah ada`);
+                            continue;
+                        }
+
+                        // Check for duplicate username in current import batch
+                        const duplicateInBatch = newTeachers.find(t => t.username === teacherData.username);
+                        if (duplicateInBatch) {
+                            duplicateUsernames.push(`Baris ${i + 1}: Username "${teacherData.username}" duplikat dalam file`);
+                            continue;
+                        }
+
+                        // Create new teacher object
+                        const newTeacher = {
+                            id: Date.now() + i, // Ensure unique ID
+                            name: teacherData.nama,
+                            username: teacherData.username,
+                            password: simpleHash(teacherData.password),
+                            subject: teacherData.mata_pelajaran,
+                            role: 'teacher',
+                            approved: true,
+                            active: true // Set as active by default
+                        };
+
+                        newTeachers.push(newTeacher);
+                    }
+
+                    // Show results
+                    let message = '';
+                    if (newTeachers.length > 0) {
+                        message += `${newTeachers.length} guru berhasil diimport.\n`;
+                    }
+                    
+                    if (errors.length > 0) {
+                        message += `\nError (${errors.length}):\n${errors.slice(0, 5).join('\n')}`;
+                        if (errors.length > 5) {
+                            message += `\n... dan ${errors.length - 5} error lainnya`;
+                        }
+                    }
+                    
+                    if (duplicateUsernames.length > 0) {
+                        message += `\nUsername duplikat (${duplicateUsernames.length}):\n${duplicateUsernames.slice(0, 5).join('\n')}`;
+                        if (duplicateUsernames.length > 5) {
+                            message += `\n... dan ${duplicateUsernames.length - 5} duplikat lainnya`;
+                        }
+                    }
+
+                    if (newTeachers.length === 0) {
+                        alert('Tidak ada guru yang berhasil diimport!\n\n' + message);
+                        return;
+                    }
+
+                    // Confirm import
+                    const confirmMessage = `Akan mengimport ${newTeachers.length} guru baru.\n\n${message}\n\nLanjutkan?`;
+                    if (confirm(confirmMessage)) {
+                        // Add new teachers to database
+                        database.users.push(...newTeachers);
+                        saveDatabase();
+                        
+                        // Refresh teachers list if currently viewing
+                        if (document.getElementById('teachersTab').classList.contains('admin-tab') && 
+                            !document.getElementById('teachersTab').classList.contains('hidden')) {
+                            loadTeachers();
+                        }
+                        
+                        alert(`Import selesai! ${newTeachers.length} guru berhasil ditambahkan.`);
+                    }
+
+                } catch (error) {
+                    alert('Error membaca file CSV: ' + error.message);
+                } finally {
+                    // Reset file input
+                    e.target.value = '';
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Filter functions
+        function filterAdminJournals() {
+            const startDate = document.getElementById('adminStartDate').value;
+            const endDate = document.getElementById('adminEndDate').value;
+            const teacherId = document.getElementById('adminTeacherFilter').value;
+            const className = document.getElementById('adminClassFilter').value;
+            
+            adminDateFilter.start = startDate;
+            adminDateFilter.end = endDate;
+            adminDateFilter.teacher = teacherId;
+            adminDateFilter.class = className;
+            
+            adminPagination.currentPage = 1; // Reset to first page when filtering
+            loadAllJournals();
+            feather.replace();
+        }
+
+        function resetAdminFilter() {
+            adminDateFilter.start = null;
+            adminDateFilter.end = null;
+            adminDateFilter.teacher = null;
+            adminDateFilter.class = null;
+            document.getElementById('adminStartDate').value = '';
+            document.getElementById('adminEndDate').value = '';
+            document.getElementById('adminTeacherFilter').value = '';
+            document.getElementById('adminClassFilter').value = '';
+            adminPagination.currentPage = 1; // Reset to first page when resetting filter
+            loadAllJournals();
+            feather.replace();
+        }
+
+        function filterTeacherJournals() {
+            const startDate = document.getElementById('teacherStartDate').value;
+            const endDate = document.getElementById('teacherEndDate').value;
+            const className = document.getElementById('teacherClassFilter').value;
+            
+            teacherDateFilter.start = startDate;
+            teacherDateFilter.end = endDate;
+            teacherDateFilter.class = className;
+            
+            teacherPagination.currentPage = 1; // Reset to first page when filtering
+            loadTeacherJournals();
+        }
+
+        function resetTeacherFilter() {
+            teacherDateFilter.start = null;
+            teacherDateFilter.end = null;
+            teacherDateFilter.class = null;
+            document.getElementById('teacherStartDate').value = '';
+            document.getElementById('teacherEndDate').value = '';
+            document.getElementById('teacherClassFilter').value = '';
+            teacherPagination.currentPage = 1; // Reset to first page when resetting filter
+            loadTeacherJournals();
+        }
+
+        // PDF Export functions
+        function exportAdminJournalsPdf() {
+            let journals = [...database.journals];
+
+            // Apply filters only if they are set
+            if (adminDateFilter.start || adminDateFilter.end || adminDateFilter.teacher || adminDateFilter.class) {
+                journals = journals.filter(journal => {
+                    // Date filter
+                    if (adminDateFilter.start || adminDateFilter.end) {
+                        const journalDate = new Date(journal.date);
+                        const startDate = adminDateFilter.start ? new Date(adminDateFilter.start) : null;
+                        const endDate = adminDateFilter.end ? new Date(adminDateFilter.end) : null;
+                        
+                        if (startDate && journalDate < startDate) return false;
+                        if (endDate && journalDate > endDate) return false;
+                    }
+                    
+                    // Teacher filter
+                    if (adminDateFilter.teacher && journal.teacherId !== parseInt(adminDateFilter.teacher)) {
+                        return false;
+                    }
+                    
+                    // Class filter
+                    if (adminDateFilter.class && journal.class !== adminDateFilter.class) {
+                        return false;
+                    }
+                    
+                    return true;
+                });
+            }
+
+            if (journals.length === 0) {
+                alert('Tidak ada data jurnal untuk diekspor');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Title
+            doc.setFontSize(16);
+            doc.text('Laporan Jurnal Pembelajaran', 14, 20);
+            
+            // Filter info
+            let filterInfo = [];
+            if (adminDateFilter.start && adminDateFilter.end) {
+                filterInfo.push(`Periode: ${adminDateFilter.start} s/d ${adminDateFilter.end}`);
+            } else if (adminDateFilter.start) {
+                filterInfo.push(`Mulai: ${adminDateFilter.start}`);
+            } else if (adminDateFilter.end) {
+                filterInfo.push(`Sampai: ${adminDateFilter.end}`);
+            }
+            
+            if (adminDateFilter.teacher) {
+                const teacher = database.users.find(u => u.id === parseInt(adminDateFilter.teacher));
+                if (teacher) {
+                    filterInfo.push(`Guru: ${teacher.name || teacher.username}`);
+                }
+            }
+            
+            if (adminDateFilter.class) {
+                filterInfo.push(`Kelas: ${adminDateFilter.class}`);
+            }
+            
+            const dateInfo = filterInfo.length > 0 ? filterInfo.join(' | ') : 'Semua Data';
+            
+            doc.setFontSize(10);
+            doc.text(dateInfo, 14, 30);
+            doc.text(`Dicetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 36);
+
+            // Table data
+            const tableData = journals.map(journal => {
+                const teacher = database.users.find(u => u.id === journal.teacherId);
+                const teacherName = teacher ? (teacher.name || teacher.username || 'Unknown') : 'Unknown';
+                return [
+                    journal.date,
+                    teacherName,
+                    journal.class,
+                    `Jam ke-${journal.startTime}-${journal.endTime}`,
+                    journal.material,
+                    journal.activity.length > 50 ? journal.activity.substring(0, 50) + '...' : journal.activity,
+                    journal.notes || '-'
+                ];
+            });
+
+            doc.autoTable({
+                head: [['Tanggal', 'Guru', 'Kelas', 'Waktu', 'Materi', 'Kegiatan', 'Catatan']],
+                body: tableData,
+                startY: 45,
+                styles: { fontSize: 8 },
+                headStyles: { fillColor: [75, 85, 99] },
+                columnStyles: {
+                    0: { cellWidth: 20 },
+                    1: { cellWidth: 25 },
+                    2: { cellWidth: 15 },
+                    3: { cellWidth: 20 },
+                    4: { cellWidth: 30 },
+                    5: { cellWidth: 40 },
+                    6: { cellWidth: 30 }
+                }
+            });
+
+            let filename = 'jurnal_pembelajaran';
+            
+            // Add teacher name to filename if filtered by teacher
+            if (adminDateFilter.teacher) {
+                const teacher = database.users.find(u => u.id === parseInt(adminDateFilter.teacher));
+                if (teacher) {
+                    const teacherName = (teacher.name || teacher.username).replace(/\s+/g, '_');
+                    filename += `_${teacherName}`;
+                }
+            }
+            
+            // Add date range to filename
+            if (adminDateFilter.start || adminDateFilter.end) {
+                filename += `_${adminDateFilter.start || 'awal'}_${adminDateFilter.end || 'akhir'}`;
+            } else {
+                filename += `_${new Date().toISOString().split('T')[0]}`;
+            }
+            filename += '.pdf';
+            
+            doc.save(filename);
+        }
+
+        function exportTeacherJournalsPdf() {
+            let journals = database.journals.filter(j => j.teacherId === currentUser.id);
+
+            // Apply filters only if they are set
+            if (teacherDateFilter.start || teacherDateFilter.end || teacherDateFilter.class) {
+                journals = journals.filter(journal => {
+                    // Date filter
+                    if (teacherDateFilter.start || teacherDateFilter.end) {
+                        const journalDate = new Date(journal.date);
+                        const startDate = teacherDateFilter.start ? new Date(teacherDateFilter.start) : null;
+                        const endDate = teacherDateFilter.end ? new Date(teacherDateFilter.end) : null;
+                        
+                        if (startDate && journalDate < startDate) return false;
+                        if (endDate && journalDate > endDate) return false;
+                    }
+                    
+                    // Class filter
+                    if (teacherDateFilter.class && journal.class !== teacherDateFilter.class) {
+                        return false;
+                    }
+                    
+                    return true;
+                });
+            }
+
+            if (journals.length === 0) {
+                alert('Tidak ada data jurnal untuk diekspor');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Title
+            doc.setFontSize(16);
+            doc.text('Jurnal Pembelajaran', 14, 20);
+            
+            // Teacher info
+            doc.setFontSize(12);
+            doc.text(`Guru: ${currentUser.name}`, 14, 30);
+            doc.text(`Mata Pelajaran: ${currentUser.subject}`, 14, 36);
+            
+            // Filter info
+            let filterInfo = [];
+            if (teacherDateFilter.start && teacherDateFilter.end) {
+                filterInfo.push(`Periode: ${teacherDateFilter.start} s/d ${teacherDateFilter.end}`);
+            } else if (teacherDateFilter.start) {
+                filterInfo.push(`Mulai: ${teacherDateFilter.start}`);
+            } else if (teacherDateFilter.end) {
+                filterInfo.push(`Sampai: ${teacherDateFilter.end}`);
+            }
+            
+            if (teacherDateFilter.class) {
+                filterInfo.push(`Kelas: ${teacherDateFilter.class}`);
+            }
+            
+            const dateInfo = filterInfo.length > 0 ? filterInfo.join(' | ') : 'Semua Data';
+            
+            doc.setFontSize(10);
+            doc.text(dateInfo, 14, 42);
+            doc.text(`Dicetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 48);
+
+            // Table data
+            const tableData = journals.map(journal => [
+                journal.date,
+                journal.class,
+                `Jam ke-${journal.startTime}-${journal.endTime}`,
+                journal.material,
+                journal.activity.length > 60 ? journal.activity.substring(0, 60) + '...' : journal.activity,
+                journal.notes || '-'
+            ]);
+
+            doc.autoTable({
+                head: [['Tanggal', 'Kelas', 'Waktu', 'Materi', 'Kegiatan', 'Catatan']],
+                body: tableData,
+                startY: 55,
+                styles: { fontSize: 9 },
+                headStyles: { fillColor: [75, 85, 99] },
+                columnStyles: {
+                    0: { cellWidth: 25 },
+                    1: { cellWidth: 20 },
+                    2: { cellWidth: 25 },
+                    3: { cellWidth: 35 },
+                    4: { cellWidth: 50 },
+                    5: { cellWidth: 35 }
+                }
+            });
+
+            let filename = `jurnal_${currentUser.name.replace(/\s+/g, '_')}`;
+            
+            // Add date range to filename
+            if (teacherDateFilter.start || teacherDateFilter.end) {
+                filename += `_${teacherDateFilter.start || 'awal'}_${teacherDateFilter.end || 'akhir'}`;
+            } else {
+                filename += `_${new Date().toISOString().split('T')[0]}`;
+            }
+            filename += '.pdf';
+            doc.save(filename);
+        }
+
+        // Pagination helper functions
+        function updateAdminPaginationInfo(totalItems, startIndex, endIndex) {
+            const info = document.getElementById('adminPaginationInfo');
+            if (totalItems === 0) {
+                info.textContent = 'Tidak ada data';
+            } else {
+                const start = startIndex + 1;
+                const end = Math.min(endIndex, totalItems);
+                info.textContent = `Menampilkan ${start}-${end} dari ${totalItems} jurnal`;
+            }
+        }
+
+        function updateTeacherPaginationInfo(totalItems, startIndex, endIndex) {
+            const info = document.getElementById('teacherPaginationInfo');
+            if (totalItems === 0) {
+                info.textContent = 'Tidak ada data';
+            } else {
+                const start = startIndex + 1;
+                const end = Math.min(endIndex, totalItems);
+                info.textContent = `Menampilkan ${start}-${end} dari ${totalItems} jurnal`;
+            }
+        }
+
+        function renderAdminPaginationControls(totalPages) {
+            const container = document.getElementById('adminPaginationControls');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            const currentPage = adminPagination.currentPage;
+            let paginationHTML = '<div class="flex items-center justify-between">';
+            
+            // Previous button
+            paginationHTML += `
+                <button onclick="goToAdminPage(${currentPage - 1})" 
+                        class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}"
+                        ${currentPage === 1 ? 'disabled' : ''}>
+                    <i data-feather="chevron-left" class="w-4 h-4 inline mr-1"></i>
+                    Sebelumnya
+                </button>
+            `;
+
+            // Page numbers
+            paginationHTML += '<div class="flex space-x-1">';
+            
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `
+                    <button onclick="goToAdminPage(${i})" 
+                            class="px-3 py-2 text-sm font-medium ${i === currentPage ? 'text-white bg-gray-800 border-gray-800' : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-50'} border rounded-md">
+                        ${i}
+                    </button>
+                `;
+            }
+            
+            paginationHTML += '</div>';
+
+            // Next button
+            paginationHTML += `
+                <button onclick="goToAdminPage(${currentPage + 1})" 
+                        class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}"
+                        ${currentPage === totalPages ? 'disabled' : ''}>
+                    Selanjutnya
+                    <i data-feather="chevron-right" class="w-4 h-4 inline ml-1"></i>
+                </button>
+            `;
+
+            paginationHTML += '</div>';
+            container.innerHTML = paginationHTML;
+            feather.replace();
+        }
+
+        function renderTeacherPaginationControls(totalPages) {
+            const container = document.getElementById('teacherPaginationControls');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            const currentPage = teacherPagination.currentPage;
+            let paginationHTML = '<div class="flex items-center justify-between">';
+            
+            // Previous button
+            paginationHTML += `
+                <button onclick="goToTeacherPage(${currentPage - 1})" 
+                        class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}"
+                        ${currentPage === 1 ? 'disabled' : ''}>
+                    <i data-feather="chevron-left" class="w-4 h-4 inline mr-1"></i>
+                    Sebelumnya
+                </button>
+            `;
+
+            // Page numbers
+            paginationHTML += '<div class="flex space-x-1">';
+            
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `
+                    <button onclick="goToTeacherPage(${i})" 
+                            class="px-3 py-2 text-sm font-medium ${i === currentPage ? 'text-white bg-gray-800 border-gray-800' : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-50'} border rounded-md">
+                        ${i}
+                    </button>
+                `;
+            }
+            
+            paginationHTML += '</div>';
+
+            // Next button
+            paginationHTML += `
+                <button onclick="goToTeacherPage(${currentPage + 1})" 
+                        class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}"
+                        ${currentPage === totalPages ? 'disabled' : ''}>
+                    Selanjutnya
+                    <i data-feather="chevron-right" class="w-4 h-4 inline ml-1"></i>
+                </button>
+            `;
+
+            paginationHTML += '</div>';
+            container.innerHTML = paginationHTML;
+            feather.replace();
+        }
+
+        function goToAdminPage(page) {
+            adminPagination.currentPage = page;
+            loadAllJournals();
+        }
+
+        function goToTeacherPage(page) {
+            teacherPagination.currentPage = page;
+            loadTeacherJournals();
+        }
+
+        function changeAdminItemsPerPage() {
+            adminPagination.itemsPerPage = parseInt(document.getElementById('adminItemsPerPage').value);
+            adminPagination.currentPage = 1; // Reset to first page
+            loadAllJournals();
+        }
+
+        function changeTeacherItemsPerPage() {
+            teacherPagination.itemsPerPage = parseInt(document.getElementById('teacherItemsPerPage').value);
+            teacherPagination.currentPage = 1; // Reset to first page
+            loadTeacherJournals();
+        }
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+    <!-- Security Footer Notice -->
+    <div class="fixed bottom-0 left-0 right-0 bg-yellow-100 border-t border-yellow-300 text-yellow-800 text-xs py-2 px-4 text-center">
+        <div class="max-w-7xl mx-auto flex items-center justify-center">
+            <i data-feather="alert-triangle" class="w-4 h-4 mr-2"></i>
+            Sistem ini hanya digunakan untuk Bapak/Ibu Guru SMKS PGRI 1 Pasuruan.
+        </div>
+    </div>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d0d40b8183ea86',t:'MTc1NDg0MjkwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
